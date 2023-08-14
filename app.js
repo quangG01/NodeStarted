@@ -4,25 +4,29 @@ const express = require("express");
 
 const app = express();
 
+app.set('views',path.join(__dirname,'views'));
+app.set('view engine','ejs');
+
 app.use(express.static('public'));
 app.use(express.urlencoded({extended:false}));
 
 app.get('/restaurants',function(req,res){
-    const fileHtmlPath = path.join(__dirname,'views','restaurants.html');
-    res.sendFile(fileHtmlPath);
+
+    const filePath = path.join(__dirname,"data","restaurants.json");
+    const readFile = fs.readFileSync(filePath);
+    const storeFile = JSON.parse(readFile);
+
+    res.render('restaurants', {numRes: storeFile.length , restaurants: storeFile})
 })
 app.get('/about',function(req,res){
-    const fileAboutPath = path.join(__dirname,'views','about.html');
-    res.sendFile(fileAboutPath);
+    res.render('about')
 })
 
 app.get('/',function(req,res){
-    const fileIndexPath = path.join(__dirname,'views','index.html');
-    res.sendFile(fileIndexPath);
+    res.render('index');
 })
 app.get('/recommend',function(req,res){
-    const fileRecommendPath = path.join(__dirname,'views','recommend.html');
-    res.sendFile(fileRecommendPath);
+    res.render('recommend');
 })
 
 app.post('/recommend',function(req,res){
@@ -38,8 +42,7 @@ app.post('/recommend',function(req,res){
 
 })
 app.get('/confirm',function(req,res){
-    const fileConfirmPath = path.join(__dirname,'views','confirm.html');
-    res.sendFile(fileConfirmPath);
+    res.render('confirm');
 })
 app.listen(4000);
 
